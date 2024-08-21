@@ -18,23 +18,25 @@ class MyHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Despesas Pessoais'),
-        centerTitle: true,
-      ),
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: const Card(
-                elevation: 5,
-                color: Colors.blue,
-                child: Text("Grafico"),
+        appBar: AppBar(
+          title: const Text('Despesas Pessoais'),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                child: const Card(
+                  elevation: 5,
+                  color: Colors.blue,
+                  child: Text("Grafico"),
+                ),
               ),
-            ),
-            TransactionUser(),
-          ]),
-    );
+              TransactionUser(),
+            ],
+          ),
+        ));
   }
 }
