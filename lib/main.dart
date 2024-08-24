@@ -1,3 +1,4 @@
+import 'package:despesas_app/components/chart.dart';
 import 'package:flutter/material.dart';
 import 'components/transaction_form.dart';
 import 'components/transaction_list.dart';
@@ -17,7 +18,7 @@ class ExpensesAPP extends StatelessWidget {
       home: MyHome(),
       theme: theme.copyWith(
         colorScheme: theme.colorScheme.copyWith(
-          primary: Colors.purple,
+          primary: Colors.purple[900],
           secondary: Colors.amber,
         ),
         textTheme: theme.textTheme.copyWith(
@@ -45,27 +46,22 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
-  final List<Transaction> _transactions = [
-    // Transaction(
-    //   id: 't1',
-    //   title: 'Novo Tênis',
-    //   value: 310.76,
-    //   date: DateTime.now(),
-    // ),
-    // Transaction(
-    //   id: 't2',
-    //   title: 'Conta de Luz',
-    //   value: 211.30,
-    //   date: DateTime.now(),
-    // ),
-  ];
+  final List<Transaction> _transactions = [];
 
-  _addTransaction(String title, double value) {
+  List<Transaction> get _recentTransactions {
+    return _transactions.where((tr) {
+      return tr.date.isAfter(DateTime.now().subtract(
+        Duration(days: 7),
+      ));
+    }).toList();
+  }
+
+  _addTransaction(String title, double value, DateTime date) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: title,
       value: value,
-      date: DateTime.now(),
+      date: date,
     );
 
     setState(() {
@@ -73,6 +69,12 @@ class _MyHomeState extends State<MyHome> {
     });
 
     Navigator.of(context).pop();
+  }
+
+  _removeTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((tr) => tr.id == id);
+    });
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -88,7 +90,7 @@ class _MyHomeState extends State<MyHome> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Despesas Pessoais'),
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: Theme.of(context).colorScheme.primary,
         titleTextStyle: TextStyle(
           color: Colors.white,
@@ -106,22 +108,25 @@ class _MyHomeState extends State<MyHome> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: const Card(
-                elevation: 5,
-                color: Colors.blue,
-                child: Text("Grafico"),
-              ),
-            ),
-            TransactionList(_transactions),
+            Chart(_recentTransactions),
+            TransactionList(_transactions, _removeTransaction),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openTransactionFormModal(context),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: Icon(Icons.add),
+      floatingActionButton: Container(
+        width: 60.0, // Largura do círculo
+        height: 60.0, // Altura do círculo
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
+        child: FloatingActionButton(
+          onPressed: () => _openTransactionFormModal(context),
+          backgroundColor:
+              Colors.transparent, // Torna o fundo do FAB transparente
+          child: Icon(Icons.add),
+          elevation: 0, // Remove a elevação padrão
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
