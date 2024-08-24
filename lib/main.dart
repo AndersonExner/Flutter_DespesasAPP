@@ -16,9 +16,9 @@ class ExpensesAPP extends StatelessWidget {
     return MaterialApp(
       home: MyHome(),
       theme: theme.copyWith(
-        primaryColor: Colors.purple,
         colorScheme: theme.colorScheme.copyWith(
-          secondary: Colors.amber, // Define your secondary color here
+          primary: Colors.purple,
+          secondary: Colors.amber,
         ),
       ),
     );
