@@ -20,6 +20,20 @@ class ExpensesAPP extends StatelessWidget {
           primary: Colors.purple,
           secondary: Colors.amber,
         ),
+        textTheme: theme.textTheme.copyWith(
+          bodyLarge: TextStyle(
+            fontFamily: 'Quicksand',
+            color: Colors.grey[800],
+          ),
+          bodyMedium: TextStyle(
+            fontFamily: 'Quicksand',
+            color: Colors.grey[800],
+          ),
+          headlineLarge: TextStyle(
+            fontFamily: 'Quicksand',
+            color: Colors.grey[800],
+          ),
+        ),
       ),
     );
   }
@@ -31,19 +45,19 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
-  final _transactions = [
-    Transaction(
-      id: 't1',
-      title: 'Novo Tênis',
-      value: 310.76,
-      date: DateTime.now(),
-    ),
-    Transaction(
-      id: 't2',
-      title: 'Conta de Luz',
-      value: 211.30,
-      date: DateTime.now(),
-    ),
+  final List<Transaction> _transactions = [
+    // Transaction(
+    //   id: 't1',
+    //   title: 'Novo Tênis',
+    //   value: 310.76,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't2',
+    //   title: 'Conta de Luz',
+    //   value: 211.30,
+    //   date: DateTime.now(),
+    // ),
   ];
 
   _addTransaction(String title, double value) {
@@ -75,10 +89,16 @@ class _MyHomeState extends State<MyHome> {
       appBar: AppBar(
         title: const Text('Despesas Pessoais'),
         centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        titleTextStyle: TextStyle(
+          color: Colors.white,
+          fontSize: 25,
+        ),
         actions: [
           IconButton(
             onPressed: () => _openTransactionFormModal(context),
             icon: Icon(Icons.add),
+            color: Colors.white,
           )
         ],
       ),
@@ -100,6 +120,7 @@ class _MyHomeState extends State<MyHome> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _openTransactionFormModal(context),
+        backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
