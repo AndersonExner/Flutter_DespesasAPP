@@ -45,69 +45,76 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            TextField(
-              controller: _titleController,
-              onSubmitted: (value) => _submitForm(),
-              decoration: InputDecoration(
-                labelText: 'Título',
+    return SingleChildScrollView(
+      child: Card(
+        elevation: 5,
+        child: Padding(
+          padding: EdgeInsets.only(
+            top: 10,
+            right: 10,
+            left: 10,
+            bottom: 10 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            children: [
+              TextField(
+                controller: _titleController,
+                onSubmitted: (value) => _submitForm(),
+                decoration: InputDecoration(
+                  labelText: 'Título',
+                ),
               ),
-            ),
-            TextField(
-              controller: _valueController,
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
-              onSubmitted: (value) => _submitForm(),
-              decoration: InputDecoration(
-                labelText: 'Valor (R\$)',
+              TextField(
+                controller: _valueController,
+                keyboardType: TextInputType.numberWithOptions(decimal: true),
+                onSubmitted: (value) => _submitForm(),
+                decoration: InputDecoration(
+                  labelText: 'Valor (R\$)',
+                ),
               ),
-            ),
-            Container(
-              height: 70,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Data Selecionada: ${DateFormat('d/MM/y').format(_selectedDate)}',
+              Container(
+                height: 70,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Data Selecionada: ${DateFormat('d/MM/y').format(_selectedDate)}',
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: _showDatePicker,
+                    TextButton(
+                      onPressed: _showDatePicker,
+                      child: Text(
+                        'Selecionar Data',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.all(
+                        Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    onPressed: _submitForm,
                     child: Text(
-                      'Selecionar Data',
+                      "Nova Transação",
                       style: TextStyle(
+                        color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
                 ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(
-                      Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  onPressed: _submitForm,
-                  child: Text(
-                    "Nova Transação",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

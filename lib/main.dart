@@ -47,6 +47,7 @@ class MyHome extends StatefulWidget {
 
 class _MyHomeState extends State<MyHome> {
   final List<Transaction> _transactions = [];
+  bool _showChart = false;
 
   List<Transaction> get _recentTransactions {
     return _transactions.where((tr) {
@@ -87,29 +88,57 @@ class _MyHomeState extends State<MyHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Despesas Pessoais'),
-        centerTitle: false,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        titleTextStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 25,
-        ),
-        actions: [
-          IconButton(
-            onPressed: () => _openTransactionFormModal(context),
-            icon: Icon(Icons.add),
-            color: Colors.white,
-          )
-        ],
+    final mediaQuery = MediaQuery.of(context);
+    bool isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final appBar = AppBar(
+      title: const Text(
+        'Despesas Pessoais',
       ),
+      centerTitle: false,
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      titleTextStyle: TextStyle(
+        color: Colors.white,
+        fontSize: 25,
+      ),
+      actions: [
+        if (isLandscape)
+          IconButton(
+            onPressed: () {
+              setState(() {
+                _showChart = !_showChart;
+              });
+            },
+            icon: Icon(_showChart ? Icons.list : Icons.show_chart),
+            color: Colors.white,
+          ),
+        IconButton(
+          onPressed: () => _openTransactionFormModal(context),
+          icon: Icon(Icons.add),
+          color: Colors.white,
+        ),
+      ],
+    );
+
+    final availableHeight = mediaQuery.size.height -
+        appBar.preferredSize.height -
+        mediaQuery.padding.top;
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_recentTransactions),
-            TransactionList(_transactions, _removeTransaction),
+            if (_showChart || !isLandscape)
+              Container(
+                height: availableHeight * (isLandscape ? 0.7 : 0.3),
+                child: Chart(_recentTransactions),
+              ),
+            if (!_showChart || !isLandscape)
+              Container(
+                height: availableHeight * (isLandscape ? 1 : 0.7),
+                child: TransactionList(_transactions, _removeTransaction),
+              ),
           ],
         ),
       ),
