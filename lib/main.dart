@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:despesas_app/components/chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'components/transaction_form.dart';
 import 'components/transaction_list.dart';
@@ -86,10 +89,32 @@ class _MyHomeState extends State<MyHome> {
         });
   }
 
+  Widget _getIconButton(IconData icon, Function() fn) {
+    return Platform.isIOS
+        ? GestureDetector(onTap: fn, child: Icon(icon))
+        : IconButton(icon: Icon(icon), onPressed: fn);
+  }
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     bool isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final actions = [
+      if (isLandscape)
+        _getIconButton(
+          _showChart ? Icons.list : Icons.show_chart,
+          () {
+            setState(() {
+              _showChart = !_showChart;
+            });
+          },
+        ),
+      _getIconButton(
+        Icons.add,
+        () => _openTransactionFormModal(context),
+      ),
+    ];
+
     final appBar = AppBar(
       title: const Text(
         'Despesas Pessoais',
@@ -100,32 +125,15 @@ class _MyHomeState extends State<MyHome> {
         color: Colors.white,
         fontSize: 25,
       ),
-      actions: [
-        if (isLandscape)
-          IconButton(
-            onPressed: () {
-              setState(() {
-                _showChart = !_showChart;
-              });
-            },
-            icon: Icon(_showChart ? Icons.list : Icons.show_chart),
-            color: Colors.white,
-          ),
-        IconButton(
-          onPressed: () => _openTransactionFormModal(context),
-          icon: Icon(Icons.add),
-          color: Colors.white,
-        ),
-      ],
+      actions: actions,
     );
 
     final availableHeight = mediaQuery.size.height -
         appBar.preferredSize.height -
         mediaQuery.padding.top;
 
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
+    final bodyPage = SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -142,22 +150,39 @@ class _MyHomeState extends State<MyHome> {
           ],
         ),
       ),
-      floatingActionButton: Container(
-        width: 60.0, // Largura do círculo
-        height: 60.0, // Altura do círculo
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Theme.of(context).colorScheme.secondary,
-        ),
-        child: FloatingActionButton(
-          onPressed: () => _openTransactionFormModal(context),
-          backgroundColor:
-              Colors.transparent, // Torna o fundo do FAB transparente
-          child: Icon(Icons.add),
-          elevation: 0, // Remove a elevação padrão
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              middle: Text('Despesas Pessoais'),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: actions,
+              ),
+            ),
+            child: bodyPage,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: bodyPage,
+            floatingActionButton: Container(
+              width: 60.0, // Largura do círculo
+              height: 60.0, // Altura do círculo
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+              child: FloatingActionButton(
+                onPressed: () => _openTransactionFormModal(context),
+                backgroundColor:
+                    Colors.transparent, // Torna o fundo do FAB transparente
+                child: Icon(Icons.add),
+                elevation: 0, // Remove a elevação padrão
+              ),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+          );
   }
 }
