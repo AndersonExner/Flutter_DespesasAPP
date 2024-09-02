@@ -79,7 +79,7 @@ class TransactionList extends StatelessWidget {
                           ),
                           onPressed: () => onRemove(tr.id),
                           label: Text(
-                            'Excluir',
+                            'Excluir Transação',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.error,
                             ),
